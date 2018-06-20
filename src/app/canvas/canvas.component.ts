@@ -40,6 +40,15 @@ export class CanvasComponent {
     ]
   };
 
+  // dietFruit: Fruit = {
+  //   fruitCoordinates: [
+  //     {
+  //       x: -1,
+  //       y: -1
+  //     }
+  //   ]
+  // };
+
   constructor() { 
     this.createBoard();
   }
@@ -72,6 +81,9 @@ export class CanvasComponent {
     }
     else if (this.board[col][row] === true){
       return Colors.SnakeBody;
+    }
+    else if (this.checkObstacles(row, col)){
+      return Colors.Obstacle;
     }
 
     return Colors.Canvas;
@@ -219,6 +231,7 @@ export class CanvasComponent {
   startGame() {
     this.gameStarted = true;
     this.score = 0;
+    this.temp = Controls.Right;
     // this.snake.snakeDirection = Controls.Right;
     this.isGameOver = false;
 
@@ -231,7 +244,8 @@ export class CanvasComponent {
       this.snake.snakeBody.push({ x: 8 + i, y: 8});
     }
 
-    this.addObstacles();
+
+    this.addObstacles();    
     this.regenerateFruit();
     this.repositionSnakeHead();
   }
