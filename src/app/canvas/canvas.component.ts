@@ -276,7 +276,7 @@ export class CanvasComponent{
     }
 
     this.regenerateFruit();
-    this.repositionSnakeHead();
+    this.changeSnakeDirection();
   }
 
 }
