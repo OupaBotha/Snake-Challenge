@@ -7,11 +7,11 @@ export const Controls = {
 
 export const Colors = {
   SnakeDied: '#D24D57',
-  Apple: '#EC644B',
-  SnakeHead: '#336E7B',
+  Apple: '#c9260a',
+  SnakeHead: '#007036',
   SnakeBody: '#C8F7C5',
-  Canvas: '#86B5BD',
-  Obstacle: '#383522'
+  Canvas: '#c7c8cc',
+  Obstacle: '#0a0a0a'
 };
 
 export const Canvas_Size = 18;
