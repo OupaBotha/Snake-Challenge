@@ -257,13 +257,13 @@ export class CanvasComponent{
   startGame() {
     this.gameStarted = true;
     this.score = 0;
-    this.temp = Controls.Left;
+    this.temp = Controls.Right;
     // this.snake.snakeDirection = Controls.Right;
     this.isGameOver = false;
     this.obstacles.obstacleCoordinates = [];
 
     this.snake = {
-      snakeDirection: Controls.Left,
+      snakeDirection: Controls.Right,
       snakeBody: []
     };
 
