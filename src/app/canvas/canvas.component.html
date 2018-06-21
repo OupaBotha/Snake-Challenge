@@ -4,6 +4,6 @@
     <div class="column" [ngStyle]="{'background-color': setColors(i, j)}" *ngFor="let row of column; let j = index"></div>
   </div>
   <div class="new-game">
-        <button mat-button color="primary" (click)="startGame()">Start Game</button>
+        <button mat-button color="primary" (click)="startGame()" *ngIf="!gameStarted">Start Game</button>
   </div>
 </div>

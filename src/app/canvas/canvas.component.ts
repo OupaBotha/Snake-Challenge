@@ -1,7 +1,10 @@
-import { Component, HostListener } from '@angular/core';
-import { Snake } from '../snake';
+import { Component, HostListener, OnInit } from '@angular/core';
+import { Snake } from '../Interfaces/snake';
 import { Controls, Colors, Canvas_Size } from '../controls';
-import { Fruit } from '../fruit';
+import { Fruit } from '../Interfaces/fruit';
+import { Obstacle } from '../Interfaces/obstacle';
+import { Observable } from 'rxjs'; 
+import { ListKeyManager } from '@angular/cdk/a11y'; 
 
 @Component({
   selector: 'app-canvas',
@@ -11,15 +14,14 @@ import { Fruit } from '../fruit';
     '(document:keypress)': 'handleKeyboardEvents($event)'
   }
 })
-export class CanvasComponent {
+export class CanvasComponent{
 
   public isGameOver = false;
-  public getKeys = Object.keys;
   public board = [];
-  public obstacles = [];
   public score = 0;
   public gameStarted = false;
   public temp: number;
+  public timeInterval = 500;
 
   snake: Snake = {
     snakeDirection: Controls.Right,
@@ -40,6 +42,10 @@ export class CanvasComponent {
     ]
   };
 
+  obstacles: Obstacle = {
+    obstacleCoordinates: []
+  };
+
   // dietFruit: Fruit = {
   //   fruitCoordinates: [
   //     {
@@ -49,21 +55,23 @@ export class CanvasComponent {
   //   ]
   // };
 
-  constructor() { 
+  constructor() {
     this.createBoard();
   }
 
-  snakeDirection(e: KeyboardEvent) {
-    if(e.keyCode === Controls.Left && this.snake.snakeDirection !== Controls.Right){
+  @HostListener('window:keyup', ['$event'])
+  snakeDirection(event: KeyboardEvent){
+
+    if (event.keyCode === Controls.Left && this.snake.snakeDirection !== Controls.Right){
       this.temp = Controls.Left;
     }
-    else if (e.keyCode === Controls.Up && this.snake.snakeDirection !== Controls.Down){
+    else if(event.keyCode === Controls.Up && this.snake.snakeDirection !== Controls.Down){
       this.temp = Controls.Up;
     }
-    else if (e.keyCode === Controls.Right && this.snake.snakeDirection !== Controls.Left){
+    else if(event.keyCode === Controls.Right && this.snake.snakeDirection !== Controls.Left){
       this.temp = Controls.Right;
     }
-    else if (e.keyCode === Controls.Down && this.snake.snakeDirection !== Controls.Up){
+    else if(event.keyCode === Controls.Down && this.snake.snakeDirection !== Controls.Up){
       this.temp = Controls.Down;
     }
   }
@@ -116,25 +124,38 @@ export class CanvasComponent {
     this.board[snakeNewHead.y][snakeNewHead.x] = true;
 
     this.snake.snakeDirection = this.temp;
+
+    setTimeout(() => {
+      me.changeSnakeDirection();
+    }, this.timeInterval);
   }
 
   repositionSnakeHead() {
-    let snakeNewHead = Object.assign({}, this.snake.snakeBody[0]);
+   
+    let snake = Object.assign({}, this.snake.snakeBody[0]);
+    // console.log(snake);
+    // console.log(this.temp);
+    // console.log(Controls.Left);
+    // console.log(Controls.Right);
+    // console.log(Controls.Up);
+    // console.log(Controls.Down);
 
     if (this.temp === Controls.Left){
-      snakeNewHead.x -= 1;
+      snake.x--;
     }
     else if (this.temp === Controls.Right){
-      snakeNewHead.x += 1;
+      snake.x++;
     }
     else if (this.temp === Controls.Up){
-      snakeNewHead.y -= -1;
+      snake.y--;
     }
     else if (this.temp === Controls.Down){
-      snakeNewHead.y += 1;
+      snake.y++;
     }
+    // console.log(snake.x);
+    // console.log(snake.y);
+    return snake;
 
-    return snakeNewHead;
   }
 
   addObstacles(){
@@ -143,20 +164,21 @@ export class CanvasComponent {
 
     // console.log(x);
 
-    if (this.board[x][y] === true || y === 8) {
+    if (this.board[y][x] === true || y === 8) {
       return this.addObstacles();
     }
 
-    this.obstacles.push({
+    this.obstacles.obstacleCoordinates.push({
       x: x,
       y: y
     });
+
   }
 
   checkObstacles(x, y){
     let res = false;
 
-    this.obstacles.forEach((val) => {
+    this.obstacles.obstacleCoordinates.forEach((val) => {
       if (val.x === x && val.y ===y){
         res = true;
       }
@@ -165,20 +187,19 @@ export class CanvasComponent {
     return res;
   }
 
-  snakeHitObstacle(body){
+  snakeHitObstacle(body: any){
     return this.checkObstacles(body.x, body.y);
   }
 
-  snakeHitCanvas(body){
-    // return this.snake.snakeBody.x === Canvas_Size || this.snake.snakeBody.x === -1 || this.snake.snakeBody.y === Canvas_Size || this.snake.snakeBody.y === -1;
+  snakeHitCanvas(body: any){
     return body.x === Canvas_Size || body.x === -1 || body.y === Canvas_Size || body.y === -1;
   }
 
-  snakeHitSnake(body) {
+  snakeHitSnake(body: any) {
     return this.board[body.x][body.y] === true;
   }
 
-  snakeEatApple(body){
+  snakeEatApple(body: any){
     return body.x === this.fruit.fruitCoordinates.x && body.y === this.fruit.fruitCoordinates.y; 
   }
 
@@ -209,6 +230,11 @@ export class CanvasComponent {
   gameOver(){
     this.isGameOver = true;
     this.gameStarted = false;
+    let me = this;
+
+    setTimeout(() => {
+      me.isGameOver = false;
+    }, this.timeInterval);
 
     this.createBoard();
   }
@@ -231,12 +257,13 @@ export class CanvasComponent {
   startGame() {
     this.gameStarted = true;
     this.score = 0;
-    this.temp = Controls.Right;
+    this.temp = Controls.Left;
     // this.snake.snakeDirection = Controls.Right;
     this.isGameOver = false;
+    this.obstacles.obstacleCoordinates = [];
 
     this.snake = {
-      snakeDirection: Controls.Right,
+      snakeDirection: Controls.Left,
       snakeBody: []
     };
 
@@ -244,8 +271,10 @@ export class CanvasComponent {
       this.snake.snakeBody.push({ x: 8 + i, y: 8});
     }
 
+    for(let i = 0; i < 3; i++){
+      this.addObstacles();  
+    }
 
-    this.addObstacles();    
     this.regenerateFruit();
     this.repositionSnakeHead();
   }
