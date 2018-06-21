@@ -133,13 +133,7 @@ export class CanvasComponent{
   repositionSnakeHead() {
    
     let snake = Object.assign({}, this.snake.snakeBody[0]);
-    // console.log(snake);
-    // console.log(this.temp);
-    // console.log(Controls.Left);
-    // console.log(Controls.Right);
-    // console.log(Controls.Up);
-    // console.log(Controls.Down);
-
+   
     if (this.temp === Controls.Left){
       snake.x--;
     }
@@ -152,8 +146,7 @@ export class CanvasComponent{
     else if (this.temp === Controls.Down){
       snake.y++;
     }
-    // console.log(snake.x);
-    // console.log(snake.y);
+
     return snake;
 
   }
@@ -162,7 +155,6 @@ export class CanvasComponent{
     let x = this.generateRandomNumber();
     let y = this.generateRandomNumber();
 
-    // console.log(x);
 
     if (this.board[y][x] === true || y === 8) {
       return this.addObstacles();
