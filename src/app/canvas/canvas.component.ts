@@ -1,18 +1,14 @@
 import { Component, HostListener, OnInit } from '@angular/core';
-import { Snake } from '../Interfaces/snake';
 import { Controls, Colors, Canvas_Size } from '../controls';
-import { Fruit } from '../Interfaces/fruit';
-import { Obstacle } from '../Interfaces/obstacle';
 import { Observable } from 'rxjs'; 
-import { ListKeyManager } from '@angular/cdk/a11y'; 
+import { Fruit } from '../Classes/fruit';
+import { Obstacle } from '../Classes/obstacle';
+import { Snake } from '../Classes/snake'; 
 
 @Component({
   selector: 'app-canvas',
   templateUrl: './canvas.component.html',
   styleUrls: ['./canvas.component.scss'],
-  host: {
-    '(document:keypress)': 'handleKeyboardEvents($event)'
-  }
 })
 export class CanvasComponent{
 
@@ -250,7 +246,6 @@ export class CanvasComponent{
     this.gameStarted = true;
     this.score = 0;
     this.temp = Controls.Right;
-    // this.snake.snakeDirection = Controls.Right;
     this.isGameOver = false;
     this.obstacles.obstacleCoordinates = [];
 
