@@ -208,8 +208,12 @@ export class CanvasComponent{
   snakeEatFruit(){
     this.score++;
 
-    let snakeTail = Object.assign({}, this.snake.snakeBody[this.snake.snakeBody.length - 1]);
+    // let snakeTail = Object.assign({}, this.snake.snakeBody[this.snake.snakeBody.length - 1]);
 
+    let snakeTail: Object;
+
+    snakeTail = this.snake.snakeBody[this.snake.snakeBody.length - 1];
+    // console.log(snakeTail);
     this.snake.snakeBody.push(snakeTail);
 
     this.regenerateFruit();
